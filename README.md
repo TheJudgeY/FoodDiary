@@ -71,11 +71,11 @@ cd FoodDiary
 
 ### 2. Database Setup
 \`\`\`bash
-# Install PostgreSQL (macOS with Homebrew)
+// Install PostgreSQL (macOS with Homebrew)
 brew install postgresql
 brew services start postgresql
 
-# Create database and user
+// Create database and user
 psql postgres
 CREATE DATABASE your_database_name;
 CREATE USER your_username WITH PASSWORD 'your_secure_password';
@@ -87,12 +87,12 @@ GRANT ALL PRIVILEGES ON DATABASE your_database_name TO your_username;
 \`\`\`bash
 cd FoodDiary_API/src/FoodDiary.Web
 
-# Copy configuration templates
+// Copy configuration templates
 cp appsettings.template.json appsettings.json
 cp appsettings.Development.template.json appsettings.Development.json
 
-# Edit configuration files with your settings
-# Update connection strings, JWT secrets, email settings
+// Edit configuration files with your settings
+// Update connection strings, JWT secrets, email settings
 \`\`\`
 
 **⚠️ IMPORTANT**: Update the following placeholders in your configuration files:
@@ -124,10 +124,10 @@ cp appsettings.Development.template.json appsettings.Development.json
 \`\`\`bash
 cd FoodDiary_Frontend/fooddiary-web
 
-# Copy environment template
+// Copy environment template
 cp .env.example .env.local
 
-# Install dependencies
+// Install dependencies
 npm install
 \`\`\`
 
@@ -162,13 +162,13 @@ Frontend will be available at: http://localhost:5173
 \`\`\`bash
 cd FoodDiary_Frontend/fooddiary-mobile
 
-# Build web assets for mobile
+// Build web assets for mobile
 npm run build
 
-# Sync with mobile project
+// Sync with mobile project
 npm run sync
 
-# Open in Android Studio
+// Open in Android Studio
 npm run open:android
 \`\`\`
 
@@ -266,7 +266,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ### Docker Deployment
 \`\`\`bash
-# Build and run with Docker Compose
+// Build and run with Docker Compose
 docker-compose up --build
 \`\`\`
 
