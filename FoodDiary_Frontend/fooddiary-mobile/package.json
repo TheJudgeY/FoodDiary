@@ -1,0 +1,22 @@
+{
+  "name": "fooddiary-mobile",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "build": "cd ../fooddiary-web && cp .env.mobile .env.local && npm run build",
+    "build:web": "cd ../fooddiary-web && echo 'VITE_API_BASE_URL=http://localhost:5001' > .env.local",
+    "sync": "npx cap sync",
+    "open:android": "npx cap open android",
+    "build:android": "npm run build && npm run sync",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@capacitor/android": "^7.4.3",
+    "@capacitor/cli": "^7.4.3",
+    "@capacitor/core": "^7.4.3"
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "appId": "com.fooddiary.app",
+  "appName": "FoodDiary",
+  "webDir": "../fooddiary-web/dist",
+  "server": {
+    "allowNavigation": ["*"],
+    "cleartext": true
+  },
+  "plugins": {
+    "SplashScreen": {
+      "launchShowDuration": 2000,
+      "launchAutoHide": true,
+      "backgroundColor": "#ffffff",
+      "androidSplashResourceName": "splash",
+      "showSpinner": false
+    },
+    "CapacitorHttp": {
+      "enabled": true
+    }
+  }
+}

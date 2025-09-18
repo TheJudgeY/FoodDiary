@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FoodDiary API Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input, button {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .response {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            padding: 15px;
+            margin-top: 15px;
+            white-space: pre-wrap;
+            font-family: monospace;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .error {
+            color: #dc3545;
+        }
+        .success {
+            color: #28a745;
+        }
+    </style>
+</head>
+<body>
+    <h1>🍎 FoodDiary API Test Page</h1>
+    
+    <div class="container">
+        <h2>Authentication</h2>
+        <div class="form-group">
+            <label for="email">Email:</label>
+            <input type="email" id="email" value="test@example.com">
+        </div>
+        <div class="form-group">
+            <label for="password">Password:</label>
+            <input type="password" id="password" value="TestPass123!">
+        </div>
+        <button onclick="login()">Login</button>
+        <button onclick="register()">Register</button>
+        <div id="authResponse" class="response"></div>
+    </div>
+
+    <div class="container">
+        <h2>API Endpoints</h2>
+        <div class="form-group">
+            <label for="date">Date:</label>
+            <input type="date" id="date" value="2025-08-07">
+        </div>
+        <button onclick="getUser()">Get User Profile</button>
+        <button onclick="getFoodEntries()">Get Food Entries</button>
+        <button onclick="getAnalytics()">Get Analytics</button>
+        <div id="apiResponse" class="response"></div>
+    </div>
+
+    <script>
+        let authToken = '';
+
+        async function makeRequest(url, options = {}) {
+            try {
+                const response = await fetch(url, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        ...(authToken && { 'Authorization': `Bearer ${authToken}` }),
+                        ...options.headers
+                    },
+                    ...options
+                });
+                
+                const data = await response.json();
+                return { success: response.ok, status: response.status, data };
+            } catch (error) {
+                return { success: false, error: error.message };
+            }
+        }
+
+        function displayResponse(elementId, result) {
+            const element = document.getElementById(elementId);
+            if (result.success) {
+                element.className = 'response success';
+                element.textContent = `Status: ${result.status}\n\n${JSON.stringify(result.data, null, 2)}`;
+            } else {
+                element.className = 'response error';
+                let errorMessage = result.error || result.data?.message || 'Unknown error';
+                
+                if (result.status === 400 && !authToken) {
+                    errorMessage += '\n\n💡 Tip: Make sure to login first to get an authentication token.';
+                } else if (result.status === 401) {
+                    errorMessage += '\n\n💡 Tip: Your token may have expired. Try logging in again.';
+                }
+                
+                element.textContent = `Error (${result.status || 'Unknown'}): ${errorMessage}`;
+            }
+        }
+
+        async function login() {
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            
+            const result = await makeRequest('http://localhost:5000/api/auth/login', {
+                method: 'POST',
+                body: JSON.stringify({ email, password })
+            });
+            
+            if (result.success && result.data.token) {
+                authToken = result.data.token;
+                displayResponse('authResponse', { success: true, status: 200, data: { message: 'Login successful! Token stored.' } });
+            } else {
+                displayResponse('authResponse', result);
+            }
+        }
+
+        async function register() {
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            
+            const result = await makeRequest('http://localhost:5000/api/auth/register', {
+                method: 'POST',
+                body: JSON.stringify({ 
+                    email, 
+                    password, 
+                    name: 'Test User' 
+                })
+            });
+            
+            if (result.success && result.data.token) {
+                authToken = result.data.token;
+                displayResponse('authResponse', { success: true, status: 201, data: { message: 'Registration successful! Token stored.' } });
+            } else {
+                displayResponse('authResponse', result);
+            }
+        }
+
+        async function getUser() {
+            if (!authToken) {
+                displayResponse('apiResponse', { success: false, error: 'Please login first' });
+                return;
+            }
+            
+            const result = await makeRequest('http://localhost:5000/api/users/me');
+            displayResponse('apiResponse', result);
+        }
+
+        async function getFoodEntries() {
+            if (!authToken) {
+                displayResponse('apiResponse', { success: false, error: 'Please login first' });
+                return;
+            }
+            
+            const date = document.getElementById('date').value;
+            const result = await makeRequest(`http://localhost:5000/api/food-entries?date=${date}`);
+            displayResponse('apiResponse', result);
+        }
+
+        async function getAnalytics() {
+            if (!authToken) {
+                displayResponse('apiResponse', { success: false, error: 'Please login first. Click the Login button above.' });
+                return;
+            }
+            
+            const date = document.getElementById('date').value;
+            const result = await makeRequest(`http://localhost:5000/api/analytics/daily?date=${date}`);
+            displayResponse('apiResponse', result);
+        }
+
+        async function createFoodEntry() {
+            if (!authToken) {
+                displayResponse('apiResponse', { success: false, error: 'Please login first' });
+                return;
+            }
+            
+            const productsResult = await makeRequest('http://localhost:5000/api/products');
+            if (!productsResult.success || !productsResult.data.products || productsResult.data.products.length === 0) {
+                displayResponse('apiResponse', { success: false, error: 'No products available. Please create a product first.' });
+                return;
+            }
+            
+            const productId = productsResult.data.products[0].id;
+            
+            const foodEntryData = {
+                productId: productId,
+                weightGrams: 150,
+                mealType: 0,
+                consumedAt: new Date().toISOString(),
+                notes: "Test food entry from web interface"
+            };
+            
+            const result = await makeRequest('http://localhost:5000/api/food-entries', {
+                method: 'POST',
+                body: JSON.stringify(foodEntryData)
+            });
+            
+            displayResponse('apiResponse', result);
+        }
+    </script>
+</body>
+</html>
