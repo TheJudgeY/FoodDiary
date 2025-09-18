@@ -205,23 +205,6 @@ npm run lint
 When running in development mode, API documentation is available at:
 - **Swagger UI**: http://localhost:5001/swagger
 
-## 🗂️ Project Structure
-
-\`\`\`
-FoodDiary/
-├── FoodDiary_API/                 # Backend API
-│   ├── src/
-│   │   ├── FoodDiary.Core/        # Domain entities and interfaces
-│   │   ├── FoodDiary.Infrastructure/ # Data access and external services
-│   │   ├── FoodDiary.UseCases/    # Business logic and use cases
-│   │   └── FoodDiary.Web/         # API controllers and configuration
-│   └── tests/                     # Unit and integration tests
-├── FoodDiary_Frontend/
-│   ├── fooddiary-web/             # React frontend application
-│   └── fooddiary-mobile/          # Capacitor mobile project
-└── docs/                          # Additional documentation
-\`\`\`
-
 ## 🔧 Configuration Files
 
 ### Backend Configuration Templates
@@ -285,7 +268,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 \`\`\`bash
 # Build and run with Docker Compose
 docker-compose up --build
-\`\`\`
 
 ## 🔧 Troubleshooting
 
@@ -356,5 +338,3 @@ docker-compose up --build
 ---
 
 **🎉 Setup Complete!** You should now have a fully functional FoodDiary application.
-
-**Built with ❤️ using Clean Architecture and modern web technologies**
